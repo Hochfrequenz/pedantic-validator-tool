@@ -4,6 +4,7 @@
 ![Coverage status badge](https://github.com/Hochfrequenz/pedantic-validator-tool/workflows/Coverage/badge.svg)
 ![Linting status badge](https://github.com/Hochfrequenz/pedantic-validator-tool/workflows/Linting/badge.svg)
 ![Black status badge](https://github.com/Hochfrequenz/pedantic-validator-tool/workflows/Formatting/badge.svg)
+![PyPI](https://img.shields.io/pypi/v/pvtool)
 
 This package contains the validation logic to validate the data of the BO4E migration model
 [ibims](https://github.com/Hochfrequenz/intermediate-bo4e-migration-models).
@@ -16,6 +17,11 @@ This package is designed to be used together with [bomf](https://github.com/Hoch
 Although, it only uses the `MigrationConfig` to use the `migration_key_date` which is necessary for some validations.
 
 ## Usage
+Install it [from pypi](https://pypi.org/project/pvtool/):
+```bash
+pip install pvtool
+```
+
 To use the validation logic you just need to bind the preconfigured modules of this package to
 `ValidationManager` of your `Injector`. Alternatively, you could execute the provider-method of the
 module on your own by supplying a `MigrationConfig` instance.
