@@ -1,10 +1,9 @@
 """
-src contains all your business logic
+This package provides `ValidationManager`s to validate data sets from `ibims`. Currently, only customer, resource and
+network data sets are supported.
+The `ValidationManager`s are provided through `injector.Module`s.
 """
 
-
-def return_foo() -> str:
-    """
-    returns foo (this is just to have some business logic and a non null coverage ;)
-    """
-    return "foo"
+from .customer_loader import ValidationManagerProviderCustomer
+from .network_loader import ValidationManagerProviderNetwork
+from .resource_loader import ValidationManagerProviderResource
