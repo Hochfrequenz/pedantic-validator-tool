@@ -3,7 +3,7 @@ Contains validation logic for TripicaCustomerLoaderDataSet
 """
 import re
 from datetime import date, datetime
-from typing import Any, Generator, Iterator, Optional, TypeAlias
+from typing import Any, Generator, Optional, TypeAlias
 
 from bo4e.com.adresse import Adresse
 from bo4e.com.externereferenz import ExterneReferenz
@@ -16,9 +16,15 @@ from ibims.com import Vertragskonto
 from ibims.datasets import TripicaCustomerLoaderDataSet
 from injector import Module, provider
 from more_itertools import first_true
-from pvframework import PathMappedValidator, Query, QueryMappedValidator, ValidationManager, Validator
-from pvframework.mapped_validators.query_map import QueryIterable
-from pvframework.types import DataSetT, SyncValidatorFunction, ValidatorFunctionT
+from pvframework import (
+    ParallelQueryMappedValidator,
+    PathMappedValidator,
+    Query,
+    QueryMappedValidator,
+    ValidationManager,
+    Validator,
+)
+from pvframework.types import SyncValidatorFunction
 from pvframework.utils import param, required_field
 from pytz import timezone
 from schwifty import BIC, IBAN
