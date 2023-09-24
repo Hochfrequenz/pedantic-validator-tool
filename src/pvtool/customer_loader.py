@@ -3,7 +3,7 @@ Contains validation logic for TripicaCustomerLoaderDataSet
 """
 import re
 from datetime import date, datetime
-from typing import Any, Generator, Iterator, Optional, TypeAlias
+from typing import Any, Generator, Optional, TypeAlias
 
 from bo4e.com.adresse import Adresse
 from bo4e.com.externereferenz import ExterneReferenz
@@ -16,9 +16,15 @@ from ibims.com import Vertragskonto
 from ibims.datasets import TripicaCustomerLoaderDataSet
 from injector import Module, provider
 from more_itertools import first_true
-from pvframework import PathMappedValidator, Query, QueryMappedValidator, ValidationManager, Validator
-from pvframework.mapped_validators.query_map import QueryIterable
-from pvframework.types import DataSetT, SyncValidatorFunction, ValidatorFunctionT
+from pvframework import (
+    ParallelQueryMappedValidator,
+    PathMappedValidator,
+    Query,
+    QueryMappedValidator,
+    ValidationManager,
+    Validator,
+)
+from pvframework.types import SyncValidatorFunction
 from pvframework.utils import param, required_field
 from pytz import timezone
 from schwifty import BIC, IBAN
@@ -324,43 +330,6 @@ def iter_vertragskonten(vertragskonten: list[Vertragskonto]) -> Generator[tuple[
     and `vertragskonto.ouid` is used for tracking for proper `ValidationError`s.
     """
     return ((vertragskonto, f"[ouid={vertragskonto.ouid}]") for vertragskonto in vertragskonten)
-
-
-class ParallelQueryMappedValidator(QueryMappedValidator[DataSetT, ValidatorFunctionT]):
-    """
-    This mapped validator class supplies the parameter combinations not as cartesian product but as parallel.
-    I.e. each iterator must yield the same number of values or have to be scalar.
-    => For every parameter pair p_i, p_j: len(p_i) == len(p_j) or len(p_i) == 1 or len(p_j) == 1
-    """
-
-    def param_sets(self, param_iterables: dict[str, QueryIterable]) -> Iterator[dict[str, Any] | Exception]:
-        """
-        This method is a generator which yields a dict of parameter sets. Each parameter set is a dict of parameter
-        names and values. The parameter sets are yielded in parallel. It behaves similar to zip.
-        """
-        for param_iterable in param_iterables.values():
-            param_iterable.include_exceptions = True
-        param_sets = {param_name: list(param_iterable) for param_name, param_iterable in param_iterables.items()}
-        lengths = [len(param_set) for param_set in param_sets.values()]
-        iter_count = 1
-        for length in lengths:
-            if 1 < iter_count != length:
-                raise ValueError("All parameter sets must have the same length or be scalar")
-            if length != iter_count:
-                iter_count = length
-        for i in range(iter_count):
-            param_set: Optional[dict[str, Any]] = {
-                param_name: param_values[0] if len(param_values) == 1 else param_values[i]
-                for param_name, param_values in param_sets.items()
-            }
-            assert param_set is not None
-            for param_name, param_value in param_set.items():
-                if param_name in self.validator.required_param_names and isinstance(param_value, Exception):
-                    yield param_value
-                    param_set = None
-                    break
-            if param_set is not None:
-                yield param_set
 
 
 class ValidationManagerProviderCustomer(Module):
