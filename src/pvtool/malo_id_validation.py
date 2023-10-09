@@ -33,6 +33,7 @@ def _get_malo_id_checksum(malo_id: str) -> str:
 _malo_id_pattern = re.compile(r"^[1-9]\d{10}$")
 
 
+# pylint:disable=unused-argument
 def validate_marktlokations_id(  # type: ignore[no-untyped-def]
     cls, marktlokations_id: str, values: ValidationInfo
 ) -> str:
