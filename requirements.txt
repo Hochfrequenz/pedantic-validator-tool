@@ -16,7 +16,7 @@ bo4e==0.5.6
     # via
     #   bomf
     #   ibims
-bomf==0.8.0
+bomf==0.8.1
     # via
     #   -r requirements.in
     #   ibims
