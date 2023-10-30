@@ -4,17 +4,15 @@
 #
 #    pip-compile '.\dev_requirements\requirements-tests.in'
 #
-colorama==0.4.6
-    # via pytest
 iniconfig==2.0.0
     # via pytest
 packaging==23.0
     # via pytest
 pluggy==1.0.0
     # via pytest
-pytest==7.4.2
+pytest==7.4.3
     # via
-    #   -r .\dev_requirements\requirements-tests.in
+    #   -r dev_requirements/requirements-tests.in
     #   pytest-asyncio
 pytest-asyncio==0.21.1
-    # via -r .\dev_requirements\requirements-tests.in
+    # via -r dev_requirements/requirements-tests.in
