@@ -44,7 +44,7 @@ networkx==3.1
     # via
     #   bomf
     #   pvframework
-pvframework==0.0.3
+pvframework==0.0.4
     # via
     #   -r requirements.in
     #   bomf

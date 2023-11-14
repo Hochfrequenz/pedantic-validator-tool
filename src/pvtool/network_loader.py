@@ -129,7 +129,7 @@ class ValidationManagerProviderNetwork(Module):
         """
         This method provides a ValidationManager for network loader
         """
-        network_manager = ValidationManager[TripicaNetworkLoaderDataSet]()
+        network_manager = ValidationManager[TripicaNetworkLoaderDataSet](manager_id="NetworkLoader")
         network_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "kunde.name1"}))
         network_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "kunde.name2"}))
         network_manager.register(PathMappedValidator(validate_geschaeftspartner_name3, {"name3": "kunde.name3"}))
@@ -164,6 +164,11 @@ class ValidationManagerProviderNetwork(Module):
             PathMappedValidator(
                 validate_rollencodetyp,
                 {"rollencodetyp": "netzbetreiber.rollencodetyp"},
+            )
+        )
+        network_manager.register(
+            PathMappedValidator(
+                validate_rollencodetyp,
                 {"rollencodetyp": "messstellenbetreiber.rollencodetyp"},
             )
         )
@@ -171,6 +176,11 @@ class ValidationManagerProviderNetwork(Module):
             PathMappedValidator(
                 validate_str_is_stripped,
                 {"string": "netzbetreiber.name1"},
+            )
+        )
+        network_manager.register(
+            PathMappedValidator(
+                validate_str_is_stripped,
                 {"string": "messstellenbetreiber.name1"},
             )
         )
@@ -178,6 +188,11 @@ class ValidationManagerProviderNetwork(Module):
             PathMappedValidator(
                 validate_rollencodenr,
                 {"rollencodenr": "netzbetreiber.rollencodenummer"},
+            )
+        )
+        network_manager.register(
+            PathMappedValidator(
+                validate_rollencodenr,
                 {"rollencodenr": "messstellenbetreiber.rollencodenummer"},
             )
         )

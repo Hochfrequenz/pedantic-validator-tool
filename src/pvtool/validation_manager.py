@@ -13,6 +13,6 @@ class ValidationManagerWithConfig(ValidationManager[DataSetT]):
     """
 
     @inject
-    def __init__(self, config: MigrationConfig):
-        super().__init__()
+    def __init__(self, config: MigrationConfig, **kwargs):
+        super().__init__(**kwargs)
         self.config = config
