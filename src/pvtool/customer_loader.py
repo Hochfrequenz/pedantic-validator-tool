@@ -232,9 +232,8 @@ def check_postleitzahl(postleitzahl: str):
 
 def check_iban(sepa_zahler: bool, iban: Optional[str] = None):
     r"""
-    Check IBAN Syntax. It must match the pattern ^([A-Z]{2})(\d{11,30})$ where the first two character must form a
-    valid country code. Additionally, the 'Prüfziffern' are used to validate the IBAN according to
-    https://ibanvalidieren.de/verifikation.html.
+    If sepa_zahler is True, iban is required and it will be checked if the IBAN is valid.
+    If sepa_zahler is False, the test passes.
     """
     if sepa_zahler:
         if iban is None:
@@ -342,7 +341,9 @@ class ValidationManagerProviderCustomer(Module):
         """
         This method provides a ValidationManager for customer loader with an injected MigrationConfig
         """
-        customer_manager = ValidationManagerWithConfig[TripicaCustomerLoaderDataSet](config)
+        customer_manager = ValidationManagerWithConfig[TripicaCustomerLoaderDataSet](
+            config, manager_id="CustomerLoader"
+        )
         customer_manager.register(
             PathMappedValidator(validate_geschaeftspartner_anrede, {"anrede": "geschaeftspartner_erw.anrede"})
         )

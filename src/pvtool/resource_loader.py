@@ -66,7 +66,7 @@ class ValidationManagerProviderResource(Module):
         """
         This method provides a ValidationManager for resource loader
         """
-        resource_manager = ValidationManager[TripicaResourceLoaderDataSet]()
+        resource_manager = ValidationManager[TripicaResourceLoaderDataSet](manager_id="ResourceLoader")
         resource_manager.register(
             PathMappedValidator(validate_melo_id, {"messlokations_id": "messlokation.messlokations_id"})
         )
