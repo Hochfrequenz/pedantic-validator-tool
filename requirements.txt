@@ -65,7 +65,7 @@ python-generics==0.0.2
     # via bomf
 pytz==2023.3.post1
     # via -r requirements.in
-schwifty==2023.11.0
+schwifty==2023.11.2
     # via -r requirements.in
 six==1.16.0
     # via python-dateutil
