@@ -55,7 +55,6 @@ pydantic[email]==2.5.3
     #   -r requirements.in
     #   bo4e
     #   bomf
-    #   pydantic
 pydantic-core==2.14.6
     # via pydantic
 pyhumps==3.8.0
@@ -66,7 +65,7 @@ python-generics==0.0.2
     # via bomf
 pytz==2023.3.post1
     # via -r requirements.in
-schwifty==2023.11.2
+schwifty==2024.1.1.post0
     # via -r requirements.in
 six==1.16.0
     # via python-dateutil
