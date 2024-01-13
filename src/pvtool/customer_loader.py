@@ -3,16 +3,12 @@ Contains validation logic for TripicaCustomerLoaderDataSet
 """
 import re
 from datetime import date, datetime
-from typing import Any, Generator, Optional, TypeAlias
+from typing import Any, Generator, Optional, TypeAlias, TypeVar
 
-from bo4e.com.adresse import Adresse
-from bo4e.com.externereferenz import ExterneReferenz
-from bo4e.enum.anrede import Anrede
-from bo4e.enum.landescode import Landescode
 from bomf.config import MigrationConfig
 from dateutil.relativedelta import relativedelta
 from email_validator import validate_email
-from ibims.com import Vertragskonto
+from ibims.bo4e import Adresse, Anrede, ExterneReferenz, Landescode, VertragskontoCBA, VertragskontoMBA
 from ibims.datasets import TripicaCustomerLoaderDataSet
 from injector import Module, provider
 from more_itertools import first_true
@@ -48,7 +44,7 @@ def get_externe_referenz(ex_ref_name: str, externe_referenzen: list[ExterneRefer
 
 def check_geschaeftspartner_anrede(anrede: Anrede):
     """
-    geschaeftspartner_erw.anrede must be one of the following: HERR, FRAU, FIRMA, EHELEUTE
+    geschaeftspartner.anrede must be one of the following: HERR, FRAU, FIRMA, EHELEUTE
     """
     valid_values_strings = {Anrede.HERR, Anrede.FRAU, Anrede.FIRMA, Anrede.EHELEUTE}
     if anrede not in valid_values_strings:
@@ -59,7 +55,7 @@ def check_geschaeftspartner_anrede(anrede: Anrede):
 
 def check_str_is_stripped(string: str):
     """
-    geschaeftspartner_erw.name1 must not start with whitespace. Further validation is difficult because e.g.
+    geschaeftspartner.name1 must not start with whitespace. Further validation is difficult because e.g.
     there exist names with characters like '.
     And if the name is a company it could even contain digits or other characters e.g. 'edi@energy'.
     """
@@ -69,7 +65,7 @@ def check_str_is_stripped(string: str):
 
 def check_geschaeftspartner_name3(name3: Optional[str] = None):
     """
-    geschaeftspartner_erw.name2 must not start with whitespace. Further validation is difficult because e.g.
+    geschaeftspartner.name2 must not start with whitespace. Further validation is difficult because e.g.
     there exist names with characters like '.
     And if the name is a company it could even contain digits or other characters e.g. 'edi@energy'.
     """
@@ -80,7 +76,7 @@ def check_geschaeftspartner_name3(name3: Optional[str] = None):
 
 def check_e_mail(e_mail: Optional[str] = None):
     """
-    geschaeftspartner_erw.e_mail_adresse must match the regex pattern `REGEX_E_MAIL`.
+    geschaeftspartner.e_mail_adresse must match the regex pattern `REGEX_E_MAIL`.
     """
     if not e_mail:
         return
@@ -89,7 +85,7 @@ def check_e_mail(e_mail: Optional[str] = None):
 
 def check_extern_customer_id(externe_referenzen: list[ExterneReferenz]):
     """
-    geschaeftspartner_erw.externe_referenzen -> customerID has to start with 2 followed by 8 digits.
+    geschaeftspartner.externe_referenzen -> customerID has to start with 2 followed by 8 digits.
     """
     customer_id = get_externe_referenz("customerID", externe_referenzen)
     if customer_id is None:
@@ -163,7 +159,7 @@ def check_date_in_past_bankverbindung(is_sepa_zahler: bool, past_date: Optional[
 
 def check_geschaeftspartner_geburtsdatum(geburtsdatum: datetime):
     """
-    geschaeftspartner_erw.geburtsdatum must be at least 18 years ago in the past but not earlier than 1900-01-01.
+    geschaeftspartner.geburtsdatum must be at least 18 years ago in the past but not earlier than 1900-01-01.
     """
     config = migration_config()
     birthday_date = geburtsdatum.astimezone(_berlin).date()
@@ -214,12 +210,22 @@ def check_address_fields(address: Adresse):
     Postleitzahl     w   w   w
     Ort              w   w   w
     """
+    param_path = param("address").param_id
     _ = (
-        required_field(address, "ort", str),
-        required_field(address, "postleitzahl", str),
+        required_field(address, "ort", str, param_base_path=param_path),
+        required_field(address, "postleitzahl", str, param_base_path=param_path),
     )
-    # pylint: disable=protected-access
-    Adresse._strasse_xor_postfach(address.model_dump())  # type:ignore[operator]
+    # Taken from the old implementation of the Address validator. See
+    # https://github.com/bo4e/BO4E-python/blob/4157dab6436546ba5a911b9b3767cd312ba41e97/src/bo4e/com/adresse.py#L53
+    if (
+        address.strasse
+        and address.hausnummer
+        and not address.postfach
+        or not address.strasse
+        and not address.hausnummer
+    ):
+        return
+    raise ValueError('You have to define either "strasse" and "hausnummer" or "postfach".')
 
 
 def check_postleitzahl(postleitzahl: str):
@@ -323,7 +329,12 @@ def iter_contract_id_dict(some_dict: dict[str, Any]) -> Generator[tuple[Any, str
     return ((value, f"[contract_id={key}]") for key, value in some_dict.items())
 
 
-def iter_vertragskonten(vertragskonten: list[Vertragskonto]) -> Generator[tuple[Vertragskonto, str], None, None]:
+VertragskontoT = TypeVar("VertragskontoT", VertragskontoMBA, VertragskontoCBA)
+
+
+def iter_vertragskonten(
+    vertragskonten: list[VertragskontoT],
+) -> Generator[tuple[VertragskontoT, str], None, None]:
     """
     This function is used for `Query().iter()` to iterate over a dictionary. The values of the dictionary are returned
     and `vertragskonto.ouid` is used for tracking for proper `ValidationError`s.
@@ -345,43 +356,35 @@ class ValidationManagerProviderCustomer(Module):
             config, manager_id="CustomerLoader"
         )
         customer_manager.register(
-            PathMappedValidator(validate_geschaeftspartner_anrede, {"anrede": "geschaeftspartner_erw.anrede"})
+            PathMappedValidator(validate_geschaeftspartner_anrede, {"anrede": "geschaeftspartner.anrede"})
         )
+        customer_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner.name1"}))
+        customer_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner.name2"}))
         customer_manager.register(
-            PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner_erw.name1"})
+            PathMappedValidator(validate_geschaeftspartner_name3, {"name3": "geschaeftspartner.name3"})
         )
-        customer_manager.register(
-            PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner_erw.name2"})
-        )
-        customer_manager.register(
-            PathMappedValidator(validate_geschaeftspartner_name3, {"name3": "geschaeftspartner_erw.name3"})
-        )
-        customer_manager.register(
-            PathMappedValidator(validate_e_mail, {"e_mail": "geschaeftspartner_erw.e_mail_adresse"})
-        )
+        customer_manager.register(PathMappedValidator(validate_e_mail, {"e_mail": "geschaeftspartner.e_mail_adresse"}))
         customer_manager.register(
             PathMappedValidator(
-                validate_extern_customer_id, {"externe_referenzen": "geschaeftspartner_erw.externe_referenzen"}
+                validate_extern_customer_id, {"externe_referenzen": "geschaeftspartner.externe_referenzen"}
             )
         )
         customer_manager.register(
-            PathMappedValidator(validate_date_in_past_required, {"past_date": "geschaeftspartner_erw.erstellungsdatum"})
+            PathMappedValidator(validate_date_in_past_required, {"past_date": "geschaeftspartner.erstellungsdatum"})
         )
         customer_manager.register(
             PathMappedValidator(
-                validate_geschaeftspartner_geburtsdatum, {"geburtsdatum": "geschaeftspartner_erw.geburtstag"}
+                validate_geschaeftspartner_geburtsdatum, {"geburtsdatum": "geschaeftspartner.geburtstag"}
             )
         )
         customer_manager.register(
-            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner_erw.telefonnummer_privat"})
+            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_privat"})
         )
         customer_manager.register(
-            PathMappedValidator(
-                validate_telefonnummer, {"telefonnummer": "geschaeftspartner_erw.telefonnummer_geschaeft"}
-            )
+            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_geschaeft"})
         )
         customer_manager.register(
-            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner_erw.telefonnummer_mobil"})
+            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_mobil"})
         )
         customer_manager.register(
             QueryMappedValidator(

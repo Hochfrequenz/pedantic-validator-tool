@@ -4,12 +4,7 @@ Contains validation logic for TripicaNetworkLoaderDataSet
 import re
 from typing import Iterator
 
-from bo4e.com.zaehlwerk import Zaehlwerk
-from bo4e.enum.kundentyp import Kundentyp
-from bo4e.enum.rollencodetyp import Rollencodetyp
-from bo4e.enum.sparte import Sparte
-from bo4e.enum.tarifart import Tarifart
-from bo4e.enum.zaehlerauspraegung import Zaehlerauspraegung
+from ibims.bo4e import Kundentyp, Rollencodetyp, Sparte, Tarifart, Zaehlerauspraegung, Zaehlwerk
 from ibims.datasets import TripicaNetworkLoaderDataSet
 from injector import Module, provider
 from pvframework import PathMappedValidator, Query, QueryMappedValidator, ValidationManager, Validator

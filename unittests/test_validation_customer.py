@@ -2,15 +2,21 @@ from datetime import UTC, datetime
 
 import pytest
 import pytz
-from bo4e.bo.vertrag import Vertrag
-from bo4e.com.adresse import Adresse
-from bo4e.com.externereferenz import ExterneReferenz
-from bo4e.enum.anrede import Anrede
-from bo4e.enum.kontaktart import Kontaktart
-from bo4e.enum.landescode import Landescode
 from bomf import MigrationConfig
-from ibims.bo import GeschaeftspartnerErweitert
-from ibims.com import Bankverbindung, SepaInfo, VertragskontoCBA, VertragskontoMBA
+from conftest import assert_full_error_coverage, intersection_with_contains_str
+from ibims.bo4e import (
+    Adresse,
+    Anrede,
+    Bankverbindung,
+    ExterneReferenz,
+    Geschaeftspartner,
+    Kontaktart,
+    Landescode,
+    SepaInfo,
+    Vertrag,
+    VertragskontoCBA,
+    VertragskontoMBA,
+)
 from ibims.datasets import TripicaCustomerLoaderDataSet
 from injector import Injector
 from pvframework import ValidationManager
@@ -33,9 +39,9 @@ def customer_validation_manager():
 
 class TestValidationCustomer:
     async def test_good_data_set(self, customer_validation_manager):
-        good_data_set = TripicaCustomerLoaderDataSet(
+        good_data_set = TripicaCustomerLoaderDataSet.model_construct(
             powercloud_customer_id="209876543",
-            geschaeftspartner_erw=GeschaeftspartnerErweitert.model_construct(
+            geschaeftspartner=Geschaeftspartner.model_construct(
                 externe_referenzen=[ExterneReferenz(ex_ref_name="customerID", ex_ref_wert="209876543")],
                 name1="Mustermann",
                 name2="Max",
@@ -75,13 +81,13 @@ class TestValidationCustomer:
                 )
             },
             vertragskonten_mbas=[
-                VertragskontoMBA(
+                VertragskontoMBA.model_construct(
                     ouid=1,
                     vertrags_adresse=Adresse(postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"),
                     vertragskontonummer="300010000",
                     rechnungsstellung=Kontaktart.E_MAIL,
                     cbas=[
-                        VertragskontoCBA(
+                        VertragskontoCBA.model_construct(
                             ouid=11,
                             vertrags_adresse=Adresse(
                                 postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"
@@ -104,9 +110,10 @@ class TestValidationCustomer:
         ["bad_data_set", "expected_errors"],
         [
             pytest.param(
-                TripicaCustomerLoaderDataSet(
+                TripicaCustomerLoaderDataSet.model_construct(
                     powercloud_customer_id="",
-                    geschaeftspartner_erw=GeschaeftspartnerErweitert.model_construct(
+                    geschaeftspartner=Geschaeftspartner.model_construct(
+                        externe_referenzen=[],
                         name1=" Mustermann",
                         name2=" Max",
                         name3="No Prof.",
@@ -144,7 +151,7 @@ class TestValidationCustomer:
                         )
                     },
                     vertragskonten_mbas=[
-                        VertragskontoMBA(
+                        VertragskontoMBA.model_construct(
                             ouid=1,
                             vertrags_adresse=Adresse(
                                 postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"
@@ -152,7 +159,7 @@ class TestValidationCustomer:
                             vertragskontonummer="300010",
                             rechnungsstellung=Kontaktart.E_MAIL,
                             cbas=[
-                                VertragskontoCBA(
+                                VertragskontoCBA.model_construct(
                                     ouid=11,
                                     vertrags_adresse=Adresse(
                                         postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"
@@ -169,15 +176,15 @@ class TestValidationCustomer:
                     ],
                 ),
                 [
-                    "geschaeftspartner_erw.name1 must not start or end with whitespace.",
-                    "geschaeftspartner_erw.name2 must not start or end with whitespace.",
-                    "geschaeftspartner_erw.name3 must be one of the following",
+                    "geschaeftspartner.name1 must not start or end with whitespace.",
+                    "geschaeftspartner.name2 must not start or end with whitespace.",
+                    "geschaeftspartner.name3 must be one of the following",
                     "The part after the @-sign is not valid. It should have a period",  # E-Mail
                     "No ExterneReferenz with name customerID",
-                    "geschaeftspartner_erw.geburtstag must be in the range of",
-                    "geschaeftspartner_erw.erstellungsdatum must be in the past",
-                    "geschaeftspartner_erw.anrede must be one of the following",
-                    "geschaeftspartner_erw.telefonnummer_mobil does not match the regex pattern for phone numbers",
+                    "geschaeftspartner.geburtstag must be in the range of",
+                    "geschaeftspartner.erstellungsdatum must be in the past",
+                    "geschaeftspartner.anrede must be one of the following",
+                    "geschaeftspartner.telefonnummer_mobil does not match the regex pattern for phone numbers",
                     "liefer_adressen[contract_id=contract_id_1].landescode must be 'DE'",
                     "liefer_adressen[contract_id=contract_id_2].postleitzahl must consist of 5 digits",
                     "rechnungs_adressen[contract_id=contract_id_1].postleitzahl is invalid",
@@ -195,7 +202,7 @@ class TestValidationCustomer:
             pytest.param(
                 TripicaCustomerLoaderDataSet.model_construct(
                     powercloud_customer_id="",
-                    geschaeftspartner_erw=GeschaeftspartnerErweitert.model_construct(),
+                    geschaeftspartner=Geschaeftspartner.model_construct(),
                     rechnungs_adressen={
                         "contract_id_1": Adresse.model_construct(),
                     },
@@ -212,20 +219,20 @@ class TestValidationCustomer:
                     ],
                 ),
                 [
-                    "None is not an instance of bo4e.enum.anrede.Anrede",
-                    "'geschaeftspartner_erw.name1' does not exist",
-                    "None is not an instance of datetime.datetime",
-                    "None is not an instance of datetime.datetime",
-                    "'ort' does not exist",
-                    "No ExterneReferenz with name customerID",
-                    "vertragskonten_mbas[ouid=1].cbas[ouid=11].erstellungsdatum not provided",
-                    "vertragskonten_mbas[ouid=1].cbas[ouid=11].vertrag.vertragsnummer not provided",
+                    "geschaeftspartner.anrede: None is not an instance of ibims.bo4e.enum.anrede.Anrede",
+                    "geschaeftspartner.name1: None is not an instance of str",
+                    "geschaeftspartner.name2: None is not an instance of str",
+                    "geschaeftspartner.geburtstag: None is not an instance of datetime.datetime",
+                    "geschaeftspartner.erstellungsdatum: None is not an instance of datetime.datetime",
+                    "geschaeftspartner.externe_referenzen: None is not a list",
+                    "rechnungs_adressen[contract_id=contract_id_1].ort: None is not an instance of str",
+                    "rechnungs_adressen[contract_id=contract_id_1].postleitzahl: None is not an instance of str",
+                    "vertragskonten_mbas[ouid=1].cbas[ouid=11].erstellungsdatum: value not provided",
+                    "vertragskonten_mbas[ouid=1].cbas[ouid=11].vertrag.vertragsnummer: value not provided",
                     "banks[contract_id=contract_id_1].bic is required for sepa_zahler",
                     "banks[contract_id=contract_id_1].iban is required for sepa_zahler",
-                    "rechnungs_adressen[contract_id=contract_id_1].postleitzahl not provided",
-                    "liefer_adressen not provided",
-                    "liefer_adressen not provided",
-                    "None is not an instance of str",
+                    "liefer_adressen: value not provided",
+                    "liefer_adressen: value not provided",
                     "banks[contract_id=contract_id_1].bankname is required for sepa_zahler",
                     "banks[contract_id=contract_id_1].kontoinhaber is required for sepa_zahler",
                     "banks[contract_id=contract_id_1].gueltig_seit is required for sepa_zahler",
@@ -240,10 +247,4 @@ class TestValidationCustomer:
         validation_summary = await customer_validation_manager.validate(bad_data_set)
 
         assert validation_summary.num_errors_total == len(expected_errors)
-        for expected_error in expected_errors:
-            exception_found = False
-            for error in validation_summary.all_errors:
-                if expected_error in str(error):
-                    exception_found = True
-
-            assert exception_found, f"No exception found for expected error '{expected_error}'"
+        assert_full_error_coverage(expected_errors, validation_summary.all_errors)
