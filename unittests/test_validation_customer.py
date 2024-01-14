@@ -3,7 +3,6 @@ from datetime import UTC, datetime
 import pytest
 import pytz
 from bomf import MigrationConfig
-from conftest import assert_full_error_coverage, intersection_with_contains_str
 from ibims.bo4e import (
     Adresse,
     Anrede,
@@ -22,6 +21,8 @@ from injector import Injector
 from pvframework import ValidationManager
 
 from pvtool.customer_loader import ValidationManagerProviderCustomer
+
+from .conftest import assert_full_error_coverage
 
 
 @pytest.fixture

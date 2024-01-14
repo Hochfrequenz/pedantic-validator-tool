@@ -1,13 +1,14 @@
 from datetime import datetime
 
 import pytest
-from conftest import assert_full_error_coverage
 from ibims.bo4e import Marktlokation, Messlokation, Messlokationszuordnung, Sparte, Vertrag, Zaehler
 from ibims.datasets import TripicaResourceLoaderDataSet
 from injector import Injector
 from pvframework import ValidationManager
 
 from pvtool.resource_loader import ValidationManagerProviderResource
+
+from .conftest import assert_full_error_coverage
 
 
 @pytest.fixture

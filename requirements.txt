@@ -26,7 +26,7 @@ frozendict==2.3.8
     # via
     #   bomf
     #   pvframework
-ibims==0.1.9
+ibims==0.1.10
     # via -r requirements.in
 idna==3.4
     # via email-validator

@@ -1,6 +1,6 @@
 bomf
 pvframework>=0.0.7
-ibims
+ibims>=0.1.10
 python-dateutil
 pydantic[email]
 more_itertools
