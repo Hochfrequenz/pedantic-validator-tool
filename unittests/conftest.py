@@ -1,15 +1,15 @@
-from collections.abc import Container, Sequence
+from collections.abc import Sequence
 from typing import Iterable, TypeVar
 
 from pvframework.errors import ValidationError
 
-T1 = TypeVar("T1")
-T2 = TypeVar("T2")
+SubT = TypeVar("SubT")
+BaseT = TypeVar("BaseT")
 
 
 def intersection_with_contains_str(
-    set_sub_container: Iterable[T1], set_base_container: Iterable[T2]
-) -> tuple[list[T1], list[T2]]:
+    set_sub_container: Iterable[SubT], set_base_container: Iterable[BaseT]
+) -> tuple[list[SubT], list[BaseT]]:
     """
     Returns the intersection of two sets, but only if the intersection is not empty.
     :param set_sub_container: the set to be checked for intersection
