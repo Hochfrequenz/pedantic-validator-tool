@@ -1,5 +1,5 @@
 bomf
-pvframework>=0.0.8
+pvframework>=0.0.7
 ibims
 python-dateutil
 pydantic[email]
