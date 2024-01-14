@@ -248,4 +248,4 @@ class TestValidationCustomer:
         validation_summary = await customer_validation_manager.validate(bad_data_set)
 
         assert validation_summary.num_errors_total == len(expected_errors)
-        assert_full_error_coverage(expected_errors, validation_summary.all_errors)
+        assert_full_error_coverage(set(expected_errors), set(validation_summary.all_errors))
