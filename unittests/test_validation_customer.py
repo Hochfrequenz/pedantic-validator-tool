@@ -201,21 +201,21 @@ class TestValidationCustomer:
                 id="errors in validators",
             ),
             pytest.param(
-                TripicaCustomerLoaderDataSet.model_construct(
+                TripicaCustomerLoaderDataSet.model_construct(  # type: ignore[call-arg]
                     powercloud_customer_id="",
                     geschaeftspartner=Geschaeftspartner.model_construct(),
                     rechnungs_adressen={
                         "contract_id_1": Adresse.model_construct(),
                     },
                     banks={
-                        "contract_id_1": Bankverbindung.model_construct(
-                            sepa_info=SepaInfo.model_construct(sepa_zahler=True)
+                        "contract_id_1": Bankverbindung.model_construct(  # type: ignore[call-arg]
+                            sepa_info=SepaInfo.model_construct(sepa_zahler=True)  # type: ignore[call-arg]
                         )
                     },
                     vertragskonten_mbas=[
-                        VertragskontoMBA.model_construct(
+                        VertragskontoMBA.model_construct(  # type: ignore[call-arg]
                             ouid=1,
-                            cbas=[VertragskontoCBA.model_construct(ouid=11)],
+                            cbas=[VertragskontoCBA.model_construct(ouid=11)],  # type: ignore[call-arg]
                         )
                     ],
                 ),

@@ -18,8 +18,8 @@ classifiers = [
 ]
 dependencies = [
     "bomf",
-    "pvframework",
-    "ibims",
+    "pvframework>=0.0.8",
+    "ibims>=0.1.11",
     "python-dateutil",
     "pydantic[email]",
     "more_itertools",
@@ -72,3 +72,6 @@ sources = ["src"]
 # even if they have no @pytest.mark.asyncio marker.
 # https://github.com/pytest-dev/pytest-asyncio#auto-mode
 asyncio_mode = "auto"
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]

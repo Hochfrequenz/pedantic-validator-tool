@@ -20,13 +20,13 @@ def resource_validation_manager() -> ValidationManager:
 class TestValidationResource:
     async def test_good_data_set(self, resource_validation_manager: ValidationManager):
         good_data_set = TripicaResourceLoaderDataSet.model_construct(
-            marktlokation=Marktlokation.model_construct(
+            marktlokation=Marktlokation.model_construct(  # type: ignore[call-arg]
                 marktlokations_id="01234567890",
                 zugehoerige_messlokation=Messlokationszuordnung.model_construct(gueltig_seit=datetime(2023, 2, 8)),
             ),
             messlokation=Messlokation.model_construct(messlokations_id="DE0123401234012340123401234012340"),
             vertrag=Vertrag.model_construct(sparte=Sparte.STROM),
-            zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),
+            zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),  # type: ignore[call-arg]
         )
         validation_summary = await resource_validation_manager.validate(good_data_set)
         assert validation_summary.num_errors_total == 0
@@ -36,7 +36,7 @@ class TestValidationResource:
         [
             pytest.param(
                 TripicaResourceLoaderDataSet.model_construct(
-                    marktlokation=Marktlokation.model_construct(
+                    marktlokation=Marktlokation.model_construct(  # type: ignore[call-arg]
                         marktlokations_id="01237890",
                         zugehoerige_messlokation=Messlokationszuordnung.model_construct(
                             gueltig_seit=datetime(2023, 2, 10)
@@ -44,7 +44,7 @@ class TestValidationResource:
                     ),
                     messlokation=Messlokation.model_construct(messlokations_id="EN0123401234012340123401234012340"),
                     vertrag=Vertrag.model_construct(sparte=Sparte.WASSER),
-                    zaehler=Zaehler.model_construct(zaehlernummer=" 893824827395hhjbd0"),
+                    zaehler=Zaehler.model_construct(zaehlernummer=" 893824827395hhjbd0"),  # type: ignore[call-arg]
                 ),
                 [
                     "messlokation.messlokations_id has to start with 'DE' followed by 11 digits and 20 "
@@ -57,10 +57,10 @@ class TestValidationResource:
             ),
             pytest.param(
                 TripicaResourceLoaderDataSet.model_construct(
-                    marktlokation=Marktlokation.model_construct(),
+                    marktlokation=Marktlokation.model_construct(),  # type: ignore[call-arg]
                     messlokation=Messlokation.model_construct(messlokations_id="DE0123401234012340123401234012340"),
                     vertrag=Vertrag.model_construct(sparte=Sparte.STROM),
-                    zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),
+                    zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),  # type: ignore[call-arg]
                 ),
                 [
                     "marktlokation.marktlokations_id: None is not an instance of str",
