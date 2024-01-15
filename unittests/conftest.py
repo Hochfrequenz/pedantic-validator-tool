@@ -9,7 +9,7 @@ BaseT = TypeVar("BaseT")
 def intersection_with_contains_str(
     set_sub_container: set[SubT], set_base_container: set[BaseT]
 ) -> tuple[set[SubT], set[BaseT]]:
-    """
+    r"""
     Calculates all elements from both sets "intersecting" in the following manner:
     Let's call `set_sub_container` A and `set_base_container` B.
     A consists of elements a1, a2, a3, ...
