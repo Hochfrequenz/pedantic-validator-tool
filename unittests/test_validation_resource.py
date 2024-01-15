@@ -1,17 +1,14 @@
 from datetime import datetime
 
 import pytest
-from bo4e.bo.marktlokation import Marktlokation
-from bo4e.bo.messlokation import Messlokation
-from bo4e.bo.vertrag import Vertrag
-from bo4e.bo.zaehler import Zaehler
-from bo4e.com.messlokationszuordnung import Messlokationszuordnung
-from bo4e.enum.sparte import Sparte
+from ibims.bo4e import Marktlokation, Messlokation, Messlokationszuordnung, Sparte, Vertrag, Zaehler
 from ibims.datasets import TripicaResourceLoaderDataSet
 from injector import Injector
 from pvframework import ValidationManager
 
 from pvtool.resource_loader import ValidationManagerProviderResource
+
+from .conftest import assert_full_error_coverage
 
 
 @pytest.fixture
@@ -22,14 +19,14 @@ def resource_validation_manager() -> ValidationManager:
 
 class TestValidationResource:
     async def test_good_data_set(self, resource_validation_manager: ValidationManager):
-        good_data_set = TripicaResourceLoaderDataSet(
-            marktlokation=Marktlokation.model_construct(
+        good_data_set = TripicaResourceLoaderDataSet.model_construct(
+            marktlokation=Marktlokation.model_construct(  # type: ignore[call-arg]
                 marktlokations_id="01234567890",
                 zugehoerige_messlokation=Messlokationszuordnung.model_construct(gueltig_seit=datetime(2023, 2, 8)),
             ),
             messlokation=Messlokation.model_construct(messlokations_id="DE0123401234012340123401234012340"),
             vertrag=Vertrag.model_construct(sparte=Sparte.STROM),
-            zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),
+            zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),  # type: ignore[call-arg]
         )
         validation_summary = await resource_validation_manager.validate(good_data_set)
         assert validation_summary.num_errors_total == 0
@@ -38,8 +35,8 @@ class TestValidationResource:
         ["bad_data_set", "expected_errors"],
         [
             pytest.param(
-                TripicaResourceLoaderDataSet(
-                    marktlokation=Marktlokation.model_construct(
+                TripicaResourceLoaderDataSet.model_construct(
+                    marktlokation=Marktlokation.model_construct(  # type: ignore[call-arg]
                         marktlokations_id="01237890",
                         zugehoerige_messlokation=Messlokationszuordnung.model_construct(
                             gueltig_seit=datetime(2023, 2, 10)
@@ -47,7 +44,7 @@ class TestValidationResource:
                     ),
                     messlokation=Messlokation.model_construct(messlokations_id="EN0123401234012340123401234012340"),
                     vertrag=Vertrag.model_construct(sparte=Sparte.WASSER),
-                    zaehler=Zaehler.model_construct(zaehlernummer=" 893824827395hhjbd0"),
+                    zaehler=Zaehler.model_construct(zaehlernummer=" 893824827395hhjbd0"),  # type: ignore[call-arg]
                 ),
                 [
                     "messlokation.messlokations_id has to start with 'DE' followed by 11 digits and 20 "
@@ -59,14 +56,14 @@ class TestValidationResource:
                 id="errors in validators",
             ),
             pytest.param(
-                TripicaResourceLoaderDataSet(
-                    marktlokation=Marktlokation.model_construct(),
+                TripicaResourceLoaderDataSet.model_construct(
+                    marktlokation=Marktlokation.model_construct(),  # type: ignore[call-arg]
                     messlokation=Messlokation.model_construct(messlokations_id="DE0123401234012340123401234012340"),
                     vertrag=Vertrag.model_construct(sparte=Sparte.STROM),
-                    zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),
+                    zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),  # type: ignore[call-arg]
                 ),
                 [
-                    "'marktlokation.marktlokations_id' does not exist",
+                    "marktlokation.marktlokations_id: None is not an instance of str",
                 ],
                 id="missing fields",
             ),
@@ -81,10 +78,4 @@ class TestValidationResource:
         validation_summary = await resource_validation_manager.validate(bad_data_set)
 
         assert validation_summary.num_errors_total == len(expected_errors)
-        for expected_error in expected_errors:
-            exception_found = False
-            for error in validation_summary.all_errors:
-                if expected_error in str(error):
-                    exception_found = True
-
-            assert exception_found, f"No exception found for expected error '{expected_error}'"
+        assert_full_error_coverage(set(expected_errors), set(validation_summary.all_errors))

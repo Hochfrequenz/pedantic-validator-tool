@@ -3,7 +3,7 @@ Contains validation logic for TripicaResourceLoaderDataSet
 """
 import re
 
-from bo4e.enum.sparte import Sparte
+from ibims.bo4e import Sparte
 from ibims.datasets import TripicaResourceLoaderDataSet
 from injector import Module, provider
 from pvframework import PathMappedValidator, ValidationManager, Validator
