@@ -63,7 +63,7 @@ class TestValidationResource:
                     zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),  # type: ignore[call-arg]
                 ),
                 [
-                    "marktlokation.marktlokations_id: None is not an instance of str",
+                    "marktlokation.marktlokations_id: value not provided",
                 ],
                 id="missing fields",
             ),
