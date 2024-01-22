@@ -167,7 +167,7 @@ class TestValidationCustomer:
                                     ),
                                     vertragskontonummer="3000100",
                                     rechnungsstellung=Kontaktart.ANSCHREIBEN,
-                                    vertrag=Vertrag.model_construct(vertragsnummer="2000100"),
+                                    vertrag=Vertrag.model_construct(vertragsnummer="2000100"),  # type: ignore[call-arg]
                                     erstellungsdatum=datetime(2223, 1, 1, tzinfo=pytz.UTC),
                                     rechnungsdatum_start=datetime(2023, 2, 1, tzinfo=pytz.UTC),
                                     rechnungsdatum_naechstes=datetime(2023, 10, 1, tzinfo=pytz.UTC),
@@ -203,9 +203,9 @@ class TestValidationCustomer:
             pytest.param(
                 TripicaCustomerLoaderDataSet.model_construct(  # type: ignore[call-arg]
                     powercloud_customer_id="",
-                    geschaeftspartner=Geschaeftspartner.model_construct(),
+                    geschaeftspartner=Geschaeftspartner.model_construct(),  # type: ignore[call-arg]
                     rechnungs_adressen={
-                        "contract_id_1": Adresse.model_construct(),
+                        "contract_id_1": Adresse.model_construct(),  # type: ignore[call-arg]
                     },
                     banks={
                         "contract_id_1": Bankverbindung.model_construct(  # type: ignore[call-arg]
