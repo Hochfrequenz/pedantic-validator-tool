@@ -22,7 +22,9 @@ class TestValidationResource:
         good_data_set = TripicaResourceLoaderDataSet.model_construct(
             marktlokation=Marktlokation.model_construct(  # type: ignore[call-arg]
                 marktlokations_id="01234567890",
-                zugehoerige_messlokation=Messlokationszuordnung.model_construct(gueltig_seit=datetime(2023, 2, 8)),  # type: ignore[call-arg]
+                zugehoerige_messlokation=Messlokationszuordnung.model_construct(  # type: ignore[call-arg]
+                    gueltig_seit=datetime(2023, 2, 8)
+                ),
             ),
             messlokation=Messlokation.model_construct(messlokations_id="DE0123401234012340123401234012340"),
             vertrag=Vertrag.model_construct(sparte=Sparte.STROM),  # type: ignore[call-arg]
