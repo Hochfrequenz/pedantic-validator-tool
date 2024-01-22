@@ -167,7 +167,7 @@ class TestValidationCustomer:
                                     ),
                                     vertragskontonummer="3000100",
                                     rechnungsstellung=Kontaktart.ANSCHREIBEN,
-                                    vertrag=Vertrag.model_construct(vertragsnummer="2000100"),
+                                    vertrag=Vertrag.model_construct(vertragsnummer="2000100"),  # type: ignore[call-arg]
                                     erstellungsdatum=datetime(2223, 1, 1, tzinfo=pytz.UTC),
                                     rechnungsdatum_start=datetime(2023, 2, 1, tzinfo=pytz.UTC),
                                     rechnungsdatum_naechstes=datetime(2023, 10, 1, tzinfo=pytz.UTC),
@@ -203,9 +203,9 @@ class TestValidationCustomer:
             pytest.param(
                 TripicaCustomerLoaderDataSet.model_construct(  # type: ignore[call-arg]
                     powercloud_customer_id="",
-                    geschaeftspartner=Geschaeftspartner.model_construct(),
+                    geschaeftspartner=Geschaeftspartner.model_construct(),  # type: ignore[call-arg]
                     rechnungs_adressen={
-                        "contract_id_1": Adresse.model_construct(),
+                        "contract_id_1": Adresse.model_construct(),  # type: ignore[call-arg]
                     },
                     banks={
                         "contract_id_1": Bankverbindung.model_construct(  # type: ignore[call-arg]
@@ -221,13 +221,13 @@ class TestValidationCustomer:
                 ),
                 [
                     "geschaeftspartner.anrede: None is not an instance of ibims.bo4e.enum.anrede.Anrede",
-                    "geschaeftspartner.name1: None is not an instance of str",
+                    "geschaeftspartner.name1: value not provided",
                     "geschaeftspartner.name2: None is not an instance of str",
                     "geschaeftspartner.geburtstag: None is not an instance of datetime.datetime",
                     "geschaeftspartner.erstellungsdatum: None is not an instance of datetime.datetime",
                     "geschaeftspartner.externe_referenzen: None is not a list",
-                    "rechnungs_adressen[contract_id=contract_id_1].ort: None is not an instance of str",
-                    "rechnungs_adressen[contract_id=contract_id_1].postleitzahl: None is not an instance of str",
+                    "rechnungs_adressen[contract_id=contract_id_1].ort: Not found",
+                    "rechnungs_adressen[contract_id=contract_id_1].postleitzahl: value not provided",
                     "vertragskonten_mbas[ouid=1].cbas[ouid=11].erstellungsdatum: value not provided",
                     "vertragskonten_mbas[ouid=1].cbas[ouid=11].vertrag.vertragsnummer: value not provided",
                     "banks[contract_id=contract_id_1].bic is required for sepa_zahler",
