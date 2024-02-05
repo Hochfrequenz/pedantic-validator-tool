@@ -1,6 +1,7 @@
 """
 Contains validation logic for TripicaCustomerLoaderDataSet
 """
+
 import re
 from datetime import date, datetime
 from typing import Any, Generator, Optional, TypeAlias, TypeVar

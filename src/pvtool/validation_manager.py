@@ -1,6 +1,7 @@
 """
 This module contains the ValidationManager classes used throughout the PV-Tool.
 """
+
 from bomf.config import MigrationConfig
 from injector import inject
 from pvframework import ValidationManager

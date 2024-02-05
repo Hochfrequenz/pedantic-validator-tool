@@ -1,6 +1,7 @@
 """
 Contains utility functions to be used in the PV-Tool.
 """
+
 import inspect
 from typing import Optional
 
