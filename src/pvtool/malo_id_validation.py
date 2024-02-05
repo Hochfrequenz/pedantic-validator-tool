@@ -1,6 +1,7 @@
 """
 validators that were included in the bo4e package prior to version 0.6.0
 """
+
 import re
 
 from pydantic_core.core_schema import ValidationInfo
