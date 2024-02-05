@@ -1,6 +1,7 @@
 """
 Contains validation logic for TripicaNetworkLoaderDataSet
 """
+
 import re
 from typing import Iterator
 
