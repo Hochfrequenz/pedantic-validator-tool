@@ -61,7 +61,7 @@ python-dateutil==2.8.2
     # via -r requirements.in
 python-generics==0.0.2
     # via bomf
-pytz==2023.3.post1
+pytz==2024.1
     # via -r requirements.in
 schwifty==2024.1.1.post0
     # via -r requirements.in
