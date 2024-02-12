@@ -12,7 +12,7 @@ bidict==0.22.1
     #   pvframework
 bo4e==0.5.6
     # via bomf
-bomf==0.9.2
+bomf==0.10.0
     # via
     #   -r requirements.in
     #   ibims
@@ -51,7 +51,6 @@ pydantic[email]==2.6.0
     #   -r requirements.in
     #   bo4e
     #   bomf
-    #   pydantic
 pydantic-core==2.16.1
     # via pydantic
 pyhumps==3.8.0
