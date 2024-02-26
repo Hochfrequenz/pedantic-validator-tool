@@ -46,13 +46,13 @@ pvframework==0.0.8
     #   bomf
 pycountry==22.3.5
     # via schwifty
-pydantic[email]==2.6.1
+pydantic[email]==2.6.2
     # via
     #   -r requirements.in
     #   bo4e
     #   bomf
     #   pydantic
-pydantic-core==2.16.2
+pydantic-core==2.16.3
     # via pydantic
 pyhumps==3.8.0
     # via bo4e
