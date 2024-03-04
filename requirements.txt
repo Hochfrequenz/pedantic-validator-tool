@@ -51,12 +51,11 @@ pydantic[email]==2.6.3
     #   -r requirements.in
     #   bo4e
     #   bomf
-    #   pydantic
 pydantic-core==2.16.3
     # via pydantic
 pyhumps==3.8.0
     # via bo4e
-python-dateutil==2.8.2
+python-dateutil==2.9.0.post0
     # via -r requirements.in
 python-generics==0.0.2
     # via bomf
