@@ -10,9 +10,7 @@ bidict==0.22.1
     # via
     #   bomf
     #   pvframework
-bo4e==0.5.6
-    # via bomf
-bomf==0.10.0
+bomf==0.11.0
     # via
     #   -r requirements.in
     #   ibims
@@ -31,9 +29,7 @@ idna==3.4
 injector==0.21.0
     # via bomf
 iso3166==2.1.1
-    # via
-    #   bo4e
-    #   schwifty
+    # via schwifty
 more-itertools==10.2.0
     # via -r requirements.in
 networkx==3.1
@@ -49,12 +45,9 @@ pycountry==22.3.5
 pydantic[email]==2.6.3
     # via
     #   -r requirements.in
-    #   bo4e
     #   bomf
 pydantic-core==2.16.3
     # via pydantic
-pyhumps==3.8.0
-    # via bo4e
 python-dateutil==2.9.0.post0
     # via -r requirements.in
 python-generics==0.0.2
