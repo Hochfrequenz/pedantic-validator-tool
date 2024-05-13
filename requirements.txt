@@ -30,8 +30,6 @@ importlib-resources==6.4.0
     # via schwifty
 injector==0.21.0
     # via bomf
-iso3166==2.1.1
-    # via schwifty
 more-itertools==10.2.0
     # via -r requirements.in
 networkx==3.1
@@ -56,7 +54,9 @@ python-generics==0.0.2
     # via bomf
 pytz==2024.1
     # via -r requirements.in
-schwifty==2024.4.0
+rstr==3.2.2
+    # via schwifty
+schwifty==2024.5.3
     # via -r requirements.in
 six==1.16.0
     # via python-dateutil
