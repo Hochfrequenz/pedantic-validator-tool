@@ -21,6 +21,7 @@ from pvframework import (
     ValidationManager,
     Validator,
 )
+from pvframework.errors import ValidationMode
 from pvframework.types import SyncValidatorFunction
 from pvframework.utils import param, required_field
 from pytz import timezone
@@ -379,13 +380,16 @@ class ValidationManagerProviderCustomer(Module):
             )
         )
         customer_manager.register(
-            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_privat"})
+            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_privat"}),
+            mode=ValidationMode.WARNING,
         )
         customer_manager.register(
-            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_geschaeft"})
+            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_geschaeft"}),
+            mode=ValidationMode.WARNING,
         )
         customer_manager.register(
-            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_mobil"})
+            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_mobil"}),
+            mode=ValidationMode.WARNING,
         )
         customer_manager.register(
             QueryMappedValidator(
