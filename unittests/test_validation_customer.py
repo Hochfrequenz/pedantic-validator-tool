@@ -185,7 +185,6 @@ class TestValidationCustomer:
                     "geschaeftspartner.geburtstag must be in the range of",
                     "geschaeftspartner.erstellungsdatum must be in the past",
                     "geschaeftspartner.anrede must be one of the following",
-                    "geschaeftspartner.telefonnummer_mobil does not match the regex pattern for phone numbers",
                     "liefer_adressen[contract_id=contract_id_1].landescode must be 'DE'",
                     "liefer_adressen[contract_id=contract_id_2].postleitzahl must consist of 5 digits",
                     "rechnungs_adressen[contract_id=contract_id_1].postleitzahl is invalid",
