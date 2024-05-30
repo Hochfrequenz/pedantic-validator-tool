@@ -358,7 +358,8 @@ class ValidationManagerProviderCustomer(Module):
             config, manager_id="CustomerLoader"
         )
         customer_manager.register(
-            PathMappedValidator(validate_geschaeftspartner_anrede, {"anrede": "geschaeftspartner.anrede"})
+            PathMappedValidator(validate_geschaeftspartner_anrede, {"anrede": "geschaeftspartner.anrede"}),
+            mode=ValidationMode.WARNING,
         )
         customer_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner.name1"}))
         customer_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner.name2"}))
@@ -377,7 +378,8 @@ class ValidationManagerProviderCustomer(Module):
         customer_manager.register(
             PathMappedValidator(
                 validate_geschaeftspartner_geburtsdatum, {"geburtsdatum": "geschaeftspartner.geburtstag"}
-            )
+            ),
+            mode=ValidationMode.WARNING,
         )
         customer_manager.register(
             PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_privat"}),
