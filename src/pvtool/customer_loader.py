@@ -21,6 +21,7 @@ from pvframework import (
     ValidationManager,
     Validator,
 )
+from pvframework.errors import ValidationMode
 from pvframework.types import SyncValidatorFunction
 from pvframework.utils import param, required_field
 from pytz import timezone
@@ -357,7 +358,8 @@ class ValidationManagerProviderCustomer(Module):
             config, manager_id="CustomerLoader"
         )
         customer_manager.register(
-            PathMappedValidator(validate_geschaeftspartner_anrede, {"anrede": "geschaeftspartner.anrede"})
+            PathMappedValidator(validate_geschaeftspartner_anrede, {"anrede": "geschaeftspartner.anrede"}),
+            mode=ValidationMode.WARNING,
         )
         customer_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner.name1"}))
         customer_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner.name2"}))
@@ -376,16 +378,20 @@ class ValidationManagerProviderCustomer(Module):
         customer_manager.register(
             PathMappedValidator(
                 validate_geschaeftspartner_geburtsdatum, {"geburtsdatum": "geschaeftspartner.geburtstag"}
-            )
+            ),
+            mode=ValidationMode.WARNING,
         )
         customer_manager.register(
-            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_privat"})
+            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_privat"}),
+            mode=ValidationMode.WARNING,
         )
         customer_manager.register(
-            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_geschaeft"})
+            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_geschaeft"}),
+            mode=ValidationMode.WARNING,
         )
         customer_manager.register(
-            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_mobil"})
+            PathMappedValidator(validate_telefonnummer, {"telefonnummer": "geschaeftspartner.telefonnummer_mobil"}),
+            mode=ValidationMode.WARNING,
         )
         customer_manager.register(
             QueryMappedValidator(
