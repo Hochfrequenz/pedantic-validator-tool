@@ -56,7 +56,7 @@ pytz==2024.1
     # via -r requirements.in
 rstr==3.2.2
     # via schwifty
-schwifty==2024.6.0
+schwifty==2024.6.1
     # via -r requirements.in
 six==1.16.0
     # via python-dateutil
