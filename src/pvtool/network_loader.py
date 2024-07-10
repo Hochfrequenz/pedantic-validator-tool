@@ -5,7 +5,7 @@ Contains validation logic for TripicaNetworkLoaderDataSet
 import re
 from typing import Iterator
 
-from ibims.bo4e import Kundentyp, Rollencodetyp, Sparte, Tarifart, Zaehlerauspraegung, Zaehlwerk
+from ibims.bo4e import Kundentyp, Registeranzahl, Rollencodetyp, Sparte, Zaehlerauspraegung, Zaehlwerk
 from ibims.datasets import TripicaNetworkLoaderDataSet
 from injector import Module, provider
 from pvframework import PathMappedValidator, Query, QueryMappedValidator, ValidationManager, Validator
@@ -62,10 +62,10 @@ def check_zaehlerauspraegung(zaehlerauspraegung: Zaehlerauspraegung) -> None:
         raise ValueError(f"{param('zaehlerauspraegung').param_id} must be EINRICHTUNGSZAEHLER")
 
 
-def check_tarifart(tarifart: Tarifart) -> None:
-    """tarifart must be EINTARIF, ZWEITARIF or MEHRTARIF"""
-    if tarifart not in (Tarifart.EINTARIF, Tarifart.ZWEITARIF, Tarifart.MEHRTARIF):
-        raise ValueError(f"{param('tarifart').param_id} must be EINTARIF, ZWEITARIF or MEHRTARIF")
+def check_registeranzahl(registeranzahl: Registeranzahl) -> None:
+    """registeranzahl must be EINTARIF, ZWEITARIF or MEHRTARIF"""
+    if registeranzahl not in (Registeranzahl.EINTARIF, Registeranzahl.ZWEITARIF, Registeranzahl.MEHRTARIF):
+        raise ValueError(f"{param('registeranzahl').param_id} must be EINTARIF, ZWEITARIF or MEHRTARIF")
 
 
 OBIS_PATTERN = re.compile(
@@ -102,7 +102,7 @@ validate_rollencodetyp: ValidatorType = Validator(check_rollencodetyp)
 validate_rollencodenr: ValidatorType = Validator(check_rollencodenr)
 validate_zaehlernummer: ValidatorType = Validator(check_zaehlernummer)
 validate_zaehlerauspraegung: ValidatorType = Validator(check_zaehlerauspraegung)
-validate_tarifart: ValidatorType = Validator(check_tarifart)
+validate_registeranzahl: ValidatorType = Validator(check_registeranzahl)
 validate_obis: ValidatorType = Validator(check_obis)
 validate_is_digit: ValidatorType = Validator(check_is_digit)
 
@@ -198,7 +198,9 @@ class ValidationManagerProviderNetwork(Module):
         network_manager.register(
             PathMappedValidator(validate_zaehlerauspraegung, {"zaehlerauspraegung": "zaehler.zaehlerauspraegung"})
         )
-        network_manager.register(PathMappedValidator(validate_tarifart, {"tarifart": "zaehler.tarifart"}))
+        network_manager.register(
+            PathMappedValidator(validate_registeranzahl, {"registeranzahl": "zaehler.registeranzahl"})
+        )
         network_manager.register(
             QueryMappedValidator(
                 validate_obis,

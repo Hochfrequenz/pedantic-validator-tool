@@ -19,7 +19,7 @@ classifiers = [
 dependencies = [
     "bomf",
     "pvframework>=0.0.8",
-    "ibims>=0.1.12",
+    "ibims>=0.2.0",
     "python-dateutil",
     "pydantic[email]",
     "more_itertools",

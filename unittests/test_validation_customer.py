@@ -7,14 +7,15 @@ from ibims.bo4e import (
     Adresse,
     Anrede,
     Bankverbindung,
-    ExterneReferenz,
     Geschaeftspartner,
     Kontaktart,
     Landescode,
     SepaInfo,
+    Typ,
     Vertrag,
     VertragskontoCBA,
     VertragskontoMBA,
+    ZusatzAttribut,
 )
 from ibims.datasets import TripicaCustomerLoaderDataSet
 from injector import Injector
@@ -43,7 +44,8 @@ class TestValidationCustomer:
         good_data_set = TripicaCustomerLoaderDataSet.model_construct(
             powercloud_customer_id="209876543",
             geschaeftspartner=Geschaeftspartner.model_construct(
-                externe_referenzen=[ExterneReferenz(ex_ref_name="customerID", ex_ref_wert="209876543")],
+                zusatz_attribute=[ZusatzAttribut(name="customerID", wert="209876543")],
+                typ="GESCHAEFTSPARTNER",
                 name1="Mustermann",
                 name2="Max",
                 name3="Prof.",
@@ -56,15 +58,19 @@ class TestValidationCustomer:
                 geburtstag=datetime(2004, 2, 29, tzinfo=pytz.UTC),
             ),
             liefer_adressen={
-                "contract_id_1": Adresse(postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="5c"),
+                "contract_id_1": Adresse(
+                    version="1", postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="5c"
+                ),
                 "contract_id_2": Adresse(
-                    postleitzahl="10238", ort="Gibt's nicht", strasse="Good Boi Straße", hausnummer="1245"
+                    version="1", postleitzahl="10238", ort="Gibt's nicht", strasse="Good Boi Straße", hausnummer="1245"
                 ),
             },
             rechnungs_adressen={
-                "contract_id_1": Adresse(postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="5c"),
+                "contract_id_1": Adresse(
+                    version="1", postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="5c"
+                ),
                 "contract_id_2": Adresse(
-                    postleitzahl="10238", ort="Gibt's nicht", strasse="Good Boi Straße", hausnummer="1245"
+                    version="1", postleitzahl="10238", ort="Gibt's nicht", strasse="Good Boi Straße", hausnummer="1245"
                 ),
             },
             banks={
@@ -84,17 +90,19 @@ class TestValidationCustomer:
             vertragskonten_mbas=[
                 VertragskontoMBA.model_construct(
                     ouid=1,
-                    vertrags_adresse=Adresse(postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"),
+                    vertrags_adresse=Adresse(
+                        version="1", postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"
+                    ),
                     vertragskontonummer="300010000",
                     rechnungsstellung=Kontaktart.E_MAIL,
                     cbas=[
                         VertragskontoCBA.model_construct(
                             ouid=11,
                             vertrags_adresse=Adresse(
-                                postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"
+                                version="1", postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"
                             ),
                             vertragskontonummer="300010001",
-                            rechnungsstellung=Kontaktart.ANSCHREIBEN,
+                            rechnungsstellung=Kontaktart.POSTWEG,
                             vertrag=Vertrag.model_construct(vertragsnummer="300010002"),
                             erstellungsdatum=datetime(2023, 1, 1, tzinfo=pytz.UTC),
                             rechnungsdatum_start=datetime(2023, 2, 1, tzinfo=pytz.UTC),
@@ -114,11 +122,13 @@ class TestValidationCustomer:
                 TripicaCustomerLoaderDataSet.model_construct(
                     powercloud_customer_id="",
                     geschaeftspartner=Geschaeftspartner.model_construct(
-                        externe_referenzen=[],
+                        zusatz_attribute=[],
+                        typ=Typ.GESCHAEFTSPARTNER,
+                        version="1",
                         name1=" Mustermann",
                         name2=" Max",
                         name3="No Prof.",
-                        anrede=Anrede.INDIVIDUELL,
+                        anrede=Anrede.FAMILIE,  # Anrede.INDIVIDUELL nicht mehr vorhanden
                         e_mail_adresse="test@test",
                         telefonnummer_mobil="0392ujdi",
                         erstellungsdatum=datetime(2482, 1, 1, tzinfo=pytz.UTC),
@@ -126,16 +136,29 @@ class TestValidationCustomer:
                     ),
                     liefer_adressen={
                         "contract_id_1": Adresse(
-                            postleitzahl="50564", ort="Köln", landescode=Landescode.GB  # type:ignore[attr-defined]
+                            version="1",
+                            postleitzahl="50564",
+                            ort="Köln",
+                            landescode=Landescode.GB,  # type:ignore[attr-defined]
                         ),
                         "contract_id_2": Adresse(
-                            postleitzahl="102384", ort="Gibt's nicht", strasse="Good Boi Straße", hausnummer="1245"
+                            version="1",
+                            postleitzahl="102384",
+                            ort="Gibt's nicht",
+                            strasse="Good Boi Straße",
+                            hausnummer="1245",
                         ),
                     },
                     rechnungs_adressen={
-                        "contract_id_1": Adresse(postleitzahl="34-65c", ort="Köln", strasse="Gigastr.", hausnummer="5"),
+                        "contract_id_1": Adresse(
+                            version="1", postleitzahl="34-65c", ort="Köln", strasse="Gigastr.", hausnummer="5"
+                        ),
                         "contract_id_2": Adresse(
-                            postleitzahl="10238", ort="Gibt's nicht", strasse="Good Boi Straße", hausnummer="1245"
+                            version="1",
+                            postleitzahl="10238",
+                            ort="Gibt's nicht",
+                            strasse="Good Boi Straße",
+                            hausnummer="1245",
                         ),
                     },
                     banks={
@@ -155,7 +178,7 @@ class TestValidationCustomer:
                         VertragskontoMBA.model_construct(
                             ouid=1,
                             vertrags_adresse=Adresse(
-                                postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"
+                                version="1", postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"
                             ),
                             vertragskontonummer="300010",
                             rechnungsstellung=Kontaktart.E_MAIL,
@@ -163,10 +186,14 @@ class TestValidationCustomer:
                                 VertragskontoCBA.model_construct(
                                     ouid=11,
                                     vertrags_adresse=Adresse(
-                                        postleitzahl="50564", ort="Köln", strasse="Gigastr.", hausnummer="571234"
+                                        version="1",
+                                        postleitzahl="50564",
+                                        ort="Köln",
+                                        strasse="Gigastr.",
+                                        hausnummer="571234",
                                     ),
                                     vertragskontonummer="3000100",
-                                    rechnungsstellung=Kontaktart.ANSCHREIBEN,
+                                    rechnungsstellung=Kontaktart.POSTWEG,
                                     vertrag=Vertrag.model_construct(vertragsnummer="2000100"),  # type: ignore[call-arg]
                                     erstellungsdatum=datetime(2223, 1, 1, tzinfo=pytz.UTC),
                                     rechnungsdatum_start=datetime(2023, 2, 1, tzinfo=pytz.UTC),
@@ -181,7 +208,7 @@ class TestValidationCustomer:
                     "geschaeftspartner.name2 must not start or end with whitespace.",
                     "geschaeftspartner.name3 must be one of the following",
                     "The part after the @-sign is not valid. It should have a period",  # E-Mail
-                    "No ExterneReferenz with name customerID",
+                    "No Zusatzattribute with name customerID",
                     "geschaeftspartner.erstellungsdatum must be in the past",
                     "liefer_adressen[contract_id=contract_id_1].landescode must be 'DE'",
                     "liefer_adressen[contract_id=contract_id_2].postleitzahl must consist of 5 digits",
@@ -219,10 +246,10 @@ class TestValidationCustomer:
                 [
                     "geschaeftspartner.anrede: None is not an instance of ibims.bo4e.enum.anrede.Anrede",
                     "geschaeftspartner.name1: value not provided",
-                    "geschaeftspartner.name2: None is not an instance of str",
+                    "geschaeftspartner.name2: value not provided",
                     "geschaeftspartner.geburtstag: None is not an instance of datetime.datetime",
                     "geschaeftspartner.erstellungsdatum: None is not an instance of datetime.datetime",
-                    "geschaeftspartner.externe_referenzen: None is not a list",
+                    "geschaeftspartner.zusatz_attribute: None is not a list",
                     "rechnungs_adressen[contract_id=contract_id_1].ort: Not found",
                     "rechnungs_adressen[contract_id=contract_id_1].postleitzahl: value not provided",
                     "vertragskonten_mbas[ouid=1].cbas[ouid=11].erstellungsdatum: value not provided",
