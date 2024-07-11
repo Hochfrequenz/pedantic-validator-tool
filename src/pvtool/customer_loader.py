@@ -9,7 +9,7 @@ from typing import Any, Generator, Optional, TypeAlias, TypeVar
 from bomf.config import MigrationConfig
 from dateutil.relativedelta import relativedelta
 from email_validator import validate_email
-from ibims.bo4e import Adresse, Anrede, ExterneReferenz, Landescode, VertragskontoCBA, VertragskontoMBA
+from ibims.bo4e import Adresse, Anrede, Landescode, VertragskontoCBA, VertragskontoMBA, ZusatzAttribut
 from ibims.datasets import TripicaCustomerLoaderDataSet
 from injector import Module, provider
 from more_itertools import first_true
@@ -33,15 +33,13 @@ from .validation_manager import ValidationManagerWithConfig
 _berlin = timezone("Europe/Berlin")
 
 
-def get_externe_referenz(ex_ref_name: str, externe_referenzen: list[ExterneReferenz]) -> Optional[str]:
+def get_zusatz_attribut(name: str, zusatz_attribute: list[ZusatzAttribut]) -> Optional[str]:
     """
-    Extracts a value from a list of `ExterneReferenz`. Returns None if there doesn't exist an `ExterneReferenz` of
-    name `ex_ref_name`.
+    Extracts a value from a list of `ZusatzAttribut`. Returns None if there doesn't exist an `ZusatzAttribut` of
+    name `name`.
     """
-    externe_referenz = first_true(
-        externe_referenzen, default=None, pred=lambda ex_ref: ex_ref.ex_ref_name == ex_ref_name
-    )
-    return externe_referenz.ex_ref_wert if externe_referenz is not None else None
+    zusatz_attribut = first_true(zusatz_attribute, default=None, pred=lambda zus_ref: zus_ref.name == name)
+    return zusatz_attribut.wert if zusatz_attribut is not None else None
 
 
 def check_geschaeftspartner_anrede(anrede: Anrede):
@@ -85,16 +83,16 @@ def check_e_mail(e_mail: Optional[str] = None):
     validate_email(e_mail, check_deliverability=False)
 
 
-def check_extern_customer_id(externe_referenzen: list[ExterneReferenz]):
+def check_extern_customer_id(zusatz_attribute: list[ZusatzAttribut]):
     """
-    geschaeftspartner.externe_referenzen -> customerID has to start with 2 followed by 8 digits.
+    geschaeftspartner.zusatz_attribute -> customerID has to start with 2 followed by 8 digits.
     """
-    customer_id = get_externe_referenz("customerID", externe_referenzen)
+    customer_id = get_zusatz_attribut("customerID", zusatz_attribute)
     if customer_id is None:
-        raise ValueError("No ExterneReferenz with name customerID")
+        raise ValueError("No Zusatzattribute with name customerID")
     if re.match(r"^2\d{8}$", customer_id) is None:
         raise ValueError(
-            f"{param('externe_referenzen').param_id} -> customerID has to start with 2 followed by 8 digits."
+            f"{param('zusatz_attribute').param_id} -> customerID has to start with 2 followed by 8 digits."
         )
 
 
@@ -368,9 +366,7 @@ class ValidationManagerProviderCustomer(Module):
         )
         customer_manager.register(PathMappedValidator(validate_e_mail, {"e_mail": "geschaeftspartner.e_mail_adresse"}))
         customer_manager.register(
-            PathMappedValidator(
-                validate_extern_customer_id, {"externe_referenzen": "geschaeftspartner.externe_referenzen"}
-            )
+            PathMappedValidator(validate_extern_customer_id, {"zusatz_attribute": "geschaeftspartner.zusatz_attribute"})
         )
         customer_manager.register(
             PathMappedValidator(validate_date_in_past_required, {"past_date": "geschaeftspartner.erstellungsdatum"})

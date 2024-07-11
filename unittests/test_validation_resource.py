@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import pytest
-from ibims.bo4e import Marktlokation, Messlokation, Messlokationszuordnung, Sparte, Vertrag, Zaehler
+from ibims.bo4e import Marktlokation, Messlokation, Messlokationszuordnung, Sparte, Typ, Vertrag, Zaehler
 from ibims.datasets import TripicaResourceLoaderDataSet
 from injector import Injector
 from pvframework import ValidationManager
@@ -26,7 +26,9 @@ class TestValidationResource:
                     gueltig_seit=datetime(2023, 2, 8)
                 ),
             ),
-            messlokation=Messlokation.model_construct(messlokations_id="DE0123401234012340123401234012340"),
+            messlokation=Messlokation.model_construct(
+                typ=Typ.ANGEBOT, version="1", messlokations_id="DE0123401234012340123401234012340"
+            ),
             vertrag=Vertrag.model_construct(sparte=Sparte.STROM),  # type: ignore[call-arg]
             zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),  # type: ignore[call-arg]
         )
@@ -44,7 +46,9 @@ class TestValidationResource:
                             gueltig_seit=datetime(2023, 2, 10)
                         ),
                     ),
-                    messlokation=Messlokation.model_construct(messlokations_id="EN0123401234012340123401234012340"),
+                    messlokation=Messlokation.model_construct(
+                        typ=Typ.ANGEBOT, version="1", messlokations_id="EN0123401234012340123401234012340"
+                    ),
                     vertrag=Vertrag.model_construct(sparte=Sparte.WASSER),  # type: ignore[call-arg]
                     zaehler=Zaehler.model_construct(zaehlernummer=" 893824827395hhjbd0"),  # type: ignore[call-arg]
                 ),
@@ -60,7 +64,9 @@ class TestValidationResource:
             pytest.param(
                 TripicaResourceLoaderDataSet.model_construct(
                     marktlokation=Marktlokation.model_construct(),  # type: ignore[call-arg]
-                    messlokation=Messlokation.model_construct(messlokations_id="DE0123401234012340123401234012340"),
+                    messlokation=Messlokation.model_construct(
+                        typ=Typ.ANGEBOT, version="1", messlokations_id="DE0123401234012340123401234012340"
+                    ),
                     vertrag=Vertrag.model_construct(sparte=Sparte.STROM),  # type: ignore[call-arg]
                     zaehler=Zaehler.model_construct(zaehlernummer="893824827395hhjbd0"),  # type: ignore[call-arg]
                 ),
