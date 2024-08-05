@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import pytest
-from ibims.bo4e import Marktlokation, Messlokation, Messlokationszuordnung, Sparte, Typ, Vertrag, Zaehler
+from ibims.bo4e import Lokationszuordnung, Marktlokation, Messlokation, Sparte, Typ, Vertrag, Zaehler, Zeitspanne
 from ibims.datasets import TripicaResourceLoaderDataSet
 from injector import Injector
 from pvframework import ValidationManager
@@ -22,9 +22,11 @@ class TestValidationResource:
         good_data_set = TripicaResourceLoaderDataSet.model_construct(
             marktlokation=Marktlokation.model_construct(  # type: ignore[call-arg]
                 marktlokations_id="01234567890",
-                zugehoerige_messlokation=Messlokationszuordnung.model_construct(  # type: ignore[call-arg]
-                    gueltig_seit=datetime(2023, 2, 8)
-                ),
+                lokationszuordnungen=[
+                    Lokationszuordnung.model_construct(
+                        gueltigkeit=Zeitspanne.model_construct(start=datetime(2023, 2, 8))
+                    )
+                ],
             ),
             messlokation=Messlokation.model_construct(
                 typ=Typ.ANGEBOT, version="1", messlokations_id="DE0123401234012340123401234012340"
@@ -42,9 +44,11 @@ class TestValidationResource:
                 TripicaResourceLoaderDataSet.model_construct(
                     marktlokation=Marktlokation.model_construct(  # type: ignore[call-arg]
                         marktlokations_id="01237890",
-                        zugehoerige_messlokation=Messlokationszuordnung.model_construct(  # type: ignore[call-arg]
-                            gueltig_seit=datetime(2023, 2, 10)
-                        ),
+                        lokationszuordnungen=[
+                            Lokationszuordnung.model_construct(
+                                gueltigkeit=Zeitspanne.model_construct(start=datetime(2023, 2, 10))
+                            )
+                        ],
                     ),
                     messlokation=Messlokation.model_construct(
                         typ=Typ.ANGEBOT, version="1", messlokations_id="EN0123401234012340123401234012340"
