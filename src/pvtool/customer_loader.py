@@ -55,23 +55,12 @@ def check_geschaeftspartner_anrede(anrede: Anrede):
 
 def check_str_is_stripped(string: str):
     """
-    geschaeftspartner.name1 must not start with whitespace. Further validation is difficult because e.g.
+    geschaeftspartner.nachname must not start with whitespace. Further validation is difficult because e.g.
     there exist names with characters like '.
     And if the name is a company it could even contain digits or other characters e.g. 'edi@energy'.
     """
     if string.strip() != string:
         raise ValueError(f"{param('string').param_id} must not start or end with whitespace.")
-
-
-def check_geschaeftspartner_name3(name3: Optional[str] = None):
-    """
-    geschaeftspartner.name2 must not start with whitespace. Further validation is difficult because e.g.
-    there exist names with characters like '.
-    And if the name is a company it could even contain digits or other characters e.g. 'edi@energy'.
-    """
-    allowed_values = {"Dr.", "Prof.", "Prof. Dr."}
-    if name3 and name3 not in allowed_values:
-        raise ValueError(f"{param('name3').param_id} must be one of the following: " f"{', '.join(allowed_values)}")
 
 
 def check_e_mail(e_mail: Optional[str] = None):
@@ -300,7 +289,6 @@ ValidatorType: TypeAlias = Validator[TripicaCustomerLoaderDataSet, SyncValidator
 
 validate_geschaeftspartner_anrede: ValidatorType = Validator(check_geschaeftspartner_anrede)
 validate_str_is_stripped: ValidatorType = Validator(check_str_is_stripped)
-validate_geschaeftspartner_name3: ValidatorType = Validator(check_geschaeftspartner_name3)
 validate_e_mail: ValidatorType = Validator(check_e_mail)
 validate_extern_customer_id: ValidatorType = Validator(check_extern_customer_id)
 validate_date_in_past_required: ValidatorType = Validator(check_date_in_past_required)
@@ -359,10 +347,11 @@ class ValidationManagerProviderCustomer(Module):
             PathMappedValidator(validate_geschaeftspartner_anrede, {"anrede": "geschaeftspartner.anrede"}),
             mode=ValidationMode.WARNING,
         )
-        customer_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner.name1"}))
-        customer_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner.name2"}))
         customer_manager.register(
-            PathMappedValidator(validate_geschaeftspartner_name3, {"name3": "geschaeftspartner.name3"})
+            PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner.nachname"})
+        )
+        customer_manager.register(
+            PathMappedValidator(validate_str_is_stripped, {"string": "geschaeftspartner.vorname"})
         )
         customer_manager.register(PathMappedValidator(validate_e_mail, {"e_mail": "geschaeftspartner.e_mail_adresse"}))
         customer_manager.register(

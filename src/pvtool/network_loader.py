@@ -15,7 +15,6 @@ from .customer_loader import (
     ValidatorType,
     validate_address_deutsch,
     validate_address_fields,
-    validate_geschaeftspartner_name3,
     validate_postleitzahl,
     validate_str_is_stripped,
 )
@@ -126,24 +125,21 @@ class ValidationManagerProviderNetwork(Module):
         This method provides a ValidationManager for network loader
         """
         network_manager = ValidationManager[TripicaNetworkLoaderDataSet](manager_id="NetworkLoader")
-        network_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "kunde.name1"}))
-        network_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "kunde.name2"}))
-        network_manager.register(PathMappedValidator(validate_geschaeftspartner_name3, {"name3": "kunde.name3"}))
-        network_manager.register(PathMappedValidator(validate_address_fields, {"address": "kunde.partneradresse"}))
+        network_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "kunde.nachname"}))
+        network_manager.register(PathMappedValidator(validate_str_is_stripped, {"string": "kunde.vorname"}))
+        network_manager.register(PathMappedValidator(validate_address_fields, {"address": "kunde.adresse"}))
         network_manager.register(
             PathMappedValidator(validate_postleitzahl, {"postleitzahl": "kunde.partneradresse.postleitzahl"})
         )
         network_manager.register(PathMappedValidator(validate_address_fields, {"address": "liefer_adresse"}))
         network_manager.register(PathMappedValidator(validate_address_deutsch, {"address": "liefer_adresse"}))
         network_manager.register(
-            PathMappedValidator(
-                validate_address_fields, {"address": "geschaeftspartner_mit_rechnungs_adresse.partneradresse"}
-            )
+            PathMappedValidator(validate_address_fields, {"address": "geschaeftspartner_mit_rechnungs_adresse.adresse"})
         )
         network_manager.register(
             PathMappedValidator(
                 validate_postleitzahl,
-                {"postleitzahl": "geschaeftspartner_mit_rechnungs_adresse.partneradresse.postleitzahl"},
+                {"postleitzahl": "geschaeftspartner_mit_rechnungs_adresse.adresse.postleitzahl"},
             )
         )
         network_manager.register(
@@ -171,13 +167,13 @@ class ValidationManagerProviderNetwork(Module):
         network_manager.register(
             PathMappedValidator(
                 validate_str_is_stripped,
-                {"string": "netzbetreiber.name1"},
+                {"string": "netzbetreiber.nachname"},
             )
         )
         network_manager.register(
             PathMappedValidator(
                 validate_str_is_stripped,
-                {"string": "messstellenbetreiber.name1"},
+                {"string": "messstellenbetreiber.nachname"},
             )
         )
         network_manager.register(
