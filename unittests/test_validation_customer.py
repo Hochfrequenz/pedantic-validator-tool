@@ -130,7 +130,6 @@ class TestValidationCustomer:
                         version="1",
                         nachname=" Mustermann",
                         vorname=" Max",
-                        titel=Titel.PROF,  # NO PROF nicht mehr vorhanden
                         anrede=Anrede.FAMILIE,  # Anrede.INDIVIDUELL nicht mehr vorhanden
                         e_mail_adresse="test@test",
                         telefonnummer_mobil="0392ujdi",
