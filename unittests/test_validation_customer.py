@@ -246,7 +246,7 @@ class TestValidationCustomer:
                 ),
                 [
                     "geschaeftspartner.anrede: None is not an instance of ibims.bo4e.enum.anrede.Anrede",
-                    "geschaeftspartner.nachname: value not provided",
+                    "geschaeftspartner.nachname: None is not an instance of str",
                     "geschaeftspartner.vorname: None is not an instance of str",
                     "geschaeftspartner.geburtstag: None is not an instance of datetime.datetime",
                     "geschaeftspartner.erstellungsdatum: None is not an instance of datetime.datetime",
