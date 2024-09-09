@@ -40,11 +40,11 @@ pvframework==0.0.8
     #   bomf
 pycountry==22.3.5
     # via schwifty
-pydantic[email]==2.8.2
+pydantic[email]==2.9.0
     # via
     #   -r requirements.in
     #   bomf
-pydantic-core==2.20.1
+pydantic-core==2.23.2
     # via pydantic
 python-dateutil==2.9.0.post0
     # via -r requirements.in
@@ -66,6 +66,8 @@ typing-extensions==4.8.0
     # via
     #   pydantic
     #   pydantic-core
+tzdata==2024.1
+    # via pydantic
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
