@@ -28,7 +28,7 @@ idna==3.4
     # via email-validator
 injector==0.21.0
     # via bomf
-more-itertools==10.4.0
+more-itertools==10.5.0
     # via -r requirements.in
 networkx==3.1
     # via
