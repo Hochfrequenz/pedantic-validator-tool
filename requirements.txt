@@ -50,7 +50,7 @@ python-dateutil==2.9.0.post0
     # via -r requirements.in
 python-generics==0.0.2
     # via bomf
-pytz==2024.1
+pytz==2024.2
     # via -r requirements.in
 rstr==3.2.2
     # via schwifty
