@@ -40,11 +40,11 @@ pvframework==0.0.8
     #   bomf
 pycountry==22.3.5
     # via schwifty
-pydantic[email]==2.9.1
+pydantic[email]==2.9.2
     # via
     #   -r requirements.in
     #   bomf
-pydantic-core==2.23.3
+pydantic-core==2.23.4
     # via pydantic
 python-dateutil==2.9.0.post0
     # via -r requirements.in
