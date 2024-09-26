@@ -42,7 +42,7 @@ linting = [
 spellcheck = [
     "codespell==2.3.0"
 ]
-test_packaging = [
+packaging = [
     "build==1.2.2",
     "twine==5.1.1"
 ]
