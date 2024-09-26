@@ -18,15 +18,43 @@ classifiers = [
 ]
 dependencies = [
     "bomf",
-    "pvframework>=0.0.8",
     "ibims>=0.3.6",
-    "python-dateutil",
-    "pydantic[email]",
     "more_itertools",
+    "pydantic[email]",
+    "pvframework>=0.0.8",
+    "python-dateutil",
     "pytz",
-    "schwifty",
+    "schwifty"
 ]     # add all the dependencies from requirements.in here, too
 dynamic = ["readme", "version"]
+
+[project.optional-dependencies]
+coverage = [
+    "coverage==7.6.1"
+]
+formatting = [
+    "black==24.8.0",
+    "isort==5.13.2"
+]
+linting = [
+    "pylint==3.3.0"
+]
+spellcheck = [
+    "codespell==2.3.0"
+]
+test_packaging = [
+    "build==1.2.2",
+    "twine==5.1.1"
+]
+tests = [
+    "pytest==8.3.3",
+    "pytest-asyncio==0.24.0"
+]
+type_check = [
+    "mypy==1.11.2",
+    "types-python-dateutil==2.9.0.20240906",
+    "types-pytz==2024.2.0.20240913"
+]
 
 [project.urls]
 Changelog = "https://github.com/Hochfrequenz/pedantic-validator-tool/releases"
