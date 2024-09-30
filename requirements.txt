@@ -38,7 +38,7 @@ pvframework==0.0.8
     # via
     #   -r pyproject.toml
     #   bomf
-pycountry==22.3.5
+pycountry==24.6.1
     # via schwifty
 pydantic[email]==2.9.2
     # via
