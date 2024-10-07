@@ -26,7 +26,7 @@ ibims==0.3.6
     # via -r pyproject.toml
 idna==3.4
     # via email-validator
-injector==0.21.0
+injector==0.22.0
     # via bomf
 more-itertools==10.5.0
     # via -r pyproject.toml
