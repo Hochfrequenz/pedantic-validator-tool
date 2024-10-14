@@ -24,7 +24,7 @@ frozendict==2.4.5
     #   pvframework
 ibims==0.3.6
     # via -r pyproject.toml
-idna==3.4
+idna==3.10
     # via email-validator
 injector==0.22.0
     # via bomf
