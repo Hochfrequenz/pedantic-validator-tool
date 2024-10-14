@@ -6,7 +6,7 @@
 #
 annotated-types==0.7.0
     # via pydantic
-bidict==0.22.1
+bidict==0.23.1
     # via
     #   bomf
     #   pvframework
