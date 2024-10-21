@@ -48,7 +48,7 @@ pydantic-core==2.23.4
     # via pydantic
 python-dateutil==2.9.0.post0
     # via -r pyproject.toml
-python-generics==0.0.2
+python-generics==0.2.3
     # via bomf
 pytz==2024.2
     # via -r pyproject.toml
