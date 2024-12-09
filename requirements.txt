@@ -56,7 +56,7 @@ rstr==3.2.2
     # via schwifty
 schwifty==2024.11.0
     # via -r pyproject.toml
-six==1.16.0
+six==1.17.0
     # via python-dateutil
 typeguard==4.4.1
     # via
