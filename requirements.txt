@@ -54,7 +54,7 @@ pytz==2024.2
     # via -r pyproject.toml
 rstr==3.2.2
     # via schwifty
-schwifty==2024.11.0
+schwifty==2025.1.0
     # via -r pyproject.toml
 six==1.17.0
     # via python-dateutil
