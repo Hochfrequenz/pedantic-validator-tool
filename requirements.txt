@@ -50,7 +50,7 @@ python-dateutil==2.9.0.post0
     # via -r pyproject.toml
 python-generics==0.2.3
     # via bomf
-pytz==2024.2
+pytz==2025.1
     # via -r pyproject.toml
 rstr==3.2.2
     # via schwifty
