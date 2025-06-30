@@ -58,7 +58,7 @@ schwifty==2025.6.0
     # via -r pyproject.toml
 six==1.17.0
     # via python-dateutil
-typeguard==4.4.2
+typeguard==4.4.4
     # via
     #   bomf
     #   pvframework
