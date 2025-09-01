@@ -62,7 +62,7 @@ typeguard==4.4.4
     # via
     #   bomf
     #   pvframework
-typing-extensions==4.14.1
+typing-extensions==4.15.0
     # via
     #   pydantic
     #   pydantic-core
