@@ -34,7 +34,7 @@ tests = [
     "pytest-asyncio==1.1.0"
 ]
 coverage = [
-    "coverage==7.10.6",
+    "coverage==7.15.2",
     {include-group = "tests"}
 ]
 formatting = [
