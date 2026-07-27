@@ -51,7 +51,7 @@ spellcheck = [
 type-check = [
     "mypy==1.17.1",
     "types-python-dateutil==2.9.0.20250822",
-    "types-pytz==2025.2.0.20250809",
+    "types-pytz==2026.3.1.20260727",
     {include-group = "tests"}
 ]
 dev = [
