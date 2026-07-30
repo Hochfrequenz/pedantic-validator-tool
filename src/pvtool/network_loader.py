@@ -3,7 +3,7 @@ Contains validation logic for TripicaNetworkLoaderDataSet
 """
 
 import re
-from typing import Iterator
+from collections.abc import Iterator
 
 from ibims.bo4e import Kundentyp, Registeranzahl, Rollencodetyp, Sparte, Zaehlerauspraegung, Zaehlwerk
 from ibims.datasets import TripicaNetworkLoaderDataSet

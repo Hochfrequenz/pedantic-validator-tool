@@ -4,6 +4,6 @@ network data sets are supported.
 The `ValidationManager`s are provided through `injector.Module`s.
 """
 
-from .customer_loader import ValidationManagerProviderCustomer
-from .network_loader import ValidationManagerProviderNetwork
-from .resource_loader import ValidationManagerProviderResource
+from .customer_loader import ValidationManagerProviderCustomer as ValidationManagerProviderCustomer
+from .network_loader import ValidationManagerProviderNetwork as ValidationManagerProviderNetwork
+from .resource_loader import ValidationManagerProviderResource as ValidationManagerProviderResource

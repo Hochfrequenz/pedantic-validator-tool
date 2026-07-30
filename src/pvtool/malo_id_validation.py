@@ -48,8 +48,8 @@ def validate_marktlokations_id(  # type: ignore[no-untyped-def]
     expected_checksum = _get_malo_id_checksum(marktlokations_id)
     actual_checksum = marktlokations_id[10:11]
     if expected_checksum != actual_checksum:
-        # pylint: disable=line-too-long
         raise ValueError(
-            f"The Marktlokations-ID '{marktlokations_id}' has checksum '{actual_checksum}' but '{expected_checksum}' was expected."
+            f"The Marktlokations-ID '{marktlokations_id}' has checksum '{actual_checksum}' "
+            f"but '{expected_checksum}' was expected."
         )
     return marktlokations_id

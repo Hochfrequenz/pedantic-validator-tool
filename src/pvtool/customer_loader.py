@@ -3,8 +3,9 @@ Contains validation logic for TripicaCustomerLoaderDataSet
 """
 
 import re
+from collections.abc import Generator
 from datetime import date, datetime
-from typing import Any, Generator, Optional, TypeAlias, TypeVar
+from typing import Any, TypeAlias, TypeVar
 
 from bomf.config import MigrationConfig
 from dateutil.relativedelta import relativedelta
@@ -33,7 +34,7 @@ from .validation_manager import ValidationManagerWithConfig
 _berlin = timezone("Europe/Berlin")
 
 
-def get_zusatz_attribut(name: str, zusatz_attribute: list[ZusatzAttribut]) -> Optional[str]:
+def get_zusatz_attribut(name: str, zusatz_attribute: list[ZusatzAttribut]) -> str | None:
     """
     Extracts a value from a list of `ZusatzAttribut`. Returns None if there doesn't exist an `ZusatzAttribut` of
     name `name`.
@@ -48,9 +49,7 @@ def check_geschaeftspartner_anrede(anrede: Anrede):
     """
     valid_values_strings = {Anrede.HERR, Anrede.FRAU, Anrede.FIRMA, Anrede.EHELEUTE}
     if anrede not in valid_values_strings:
-        raise ValueError(
-            f"{param('anrede').param_id} must be one of the following: " f"{', '.join(valid_values_strings)}"
-        )
+        raise ValueError(f"{param('anrede').param_id} must be one of the following: {', '.join(valid_values_strings)}")
 
 
 def check_str_is_stripped(string: str):
@@ -63,7 +62,7 @@ def check_str_is_stripped(string: str):
         raise ValueError(f"{param('string').param_id} must not start or end with whitespace.")
 
 
-def check_e_mail(e_mail: Optional[str] = None):
+def check_e_mail(e_mail: str | None = None):
     """
     geschaeftspartner.e_mail_adresse must match the regex pattern `REGEX_E_MAIL`.
     """
@@ -107,7 +106,7 @@ def check_date_in_future_required(future_date: datetime):
         )
 
 
-def check_date_in_past_optional(past_date: Optional[datetime] = None):
+def check_date_in_past_optional(past_date: datetime | None = None):
     """
     The date is optional and must be in the past as of the migration_key_date
     """
@@ -121,7 +120,7 @@ def check_date_in_past_optional(past_date: Optional[datetime] = None):
         )
 
 
-def check_date_in_future_optional(future_date: Optional[datetime] = None):
+def check_date_in_future_optional(future_date: datetime | None = None):
     """
     The date is optional and must be in the future as of the migration_key_date
     """
@@ -132,7 +131,7 @@ def check_date_in_future_optional(future_date: Optional[datetime] = None):
         )
 
 
-def check_date_in_past_bankverbindung(is_sepa_zahler: bool, past_date: Optional[datetime] = None):
+def check_date_in_past_bankverbindung(is_sepa_zahler: bool, past_date: datetime | None = None):
     """
     The date is required if customer is sepa_zahler, and must be in the past as of the migration_key_date
     """
@@ -159,19 +158,19 @@ def check_geschaeftspartner_geburtsdatum(geburtsdatum: datetime):
         # stdlib timedelta doesn't support years as kwarg
         # February.
         raise ValueError(
-            f"{param('geburtsdatum').param_id} must be in the range of " f"{earliest_birthday} to {latest_18}."
+            f"{param('geburtsdatum').param_id} must be in the range of {earliest_birthday} to {latest_18}."
         )
 
 
 REGEX_TEL_NR = re.compile(r"^(\+?[1-9]|0)[0-9]{7,14}$")
 
 
-def check_telefonnummer(telefonnummer: Optional[str] = None):
+def check_telefonnummer(telefonnummer: str | None = None):
     r"""
     telefonnummer must match the regex pattern `REGEX_TEL_NR` (ignoring all following characters: r"[-.\s()]").
     """
     if telefonnummer and re.match(REGEX_TEL_NR, re.sub(r"[-.\s()]", "", telefonnummer)) is None:
-        raise ValueError(f"{param('telefonnummer').param_id} does not match the regex pattern " "for phone numbers.")
+        raise ValueError(f"{param('telefonnummer').param_id} does not match the regex pattern for phone numbers.")
 
 
 def check_address_deutsch(address: Adresse):
@@ -206,12 +205,8 @@ def check_address_fields(address: Adresse):
     )
     # Taken from the old implementation of the Address validator. See
     # https://github.com/bo4e/BO4E-python/blob/4157dab6436546ba5a911b9b3767cd312ba41e97/src/bo4e/com/adresse.py#L53
-    if (
-        address.strasse
-        and address.hausnummer
-        and not address.postfach
-        or not address.strasse
-        and not address.hausnummer
+    if (address.strasse and address.hausnummer and not address.postfach) or (
+        not address.strasse and not address.hausnummer
     ):
         return
     raise ValueError('You have to define either "strasse" and "hausnummer" or "postfach".')
@@ -225,7 +220,7 @@ def check_postleitzahl(postleitzahl: str):
         raise ValueError(f"{param('postleitzahl').param_id} is invalid")
 
 
-def check_iban(sepa_zahler: bool, iban: Optional[str] = None):
+def check_iban(sepa_zahler: bool, iban: str | None = None):
     r"""
     If sepa_zahler is True, iban is required and it will be checked if the IBAN is valid.
     If sepa_zahler is False, the test passes.
@@ -236,7 +231,7 @@ def check_iban(sepa_zahler: bool, iban: Optional[str] = None):
         IBAN(iban).validate()
 
 
-def check_bic(sepa_zahler: bool, bic: Optional[str] = None):
+def check_bic(sepa_zahler: bool, bic: str | None = None):
     """
     bic must consist of 8 or 11 alphanumeric characters.
     """
@@ -246,7 +241,7 @@ def check_bic(sepa_zahler: bool, bic: Optional[str] = None):
         BIC(bic).validate()
 
 
-def check_kontoinhaber(is_sepa_zahler: bool, kontoinhaber: Optional[str] = None):
+def check_kontoinhaber(is_sepa_zahler: bool, kontoinhaber: str | None = None):
     """
     Checks if the kontoinhaber has the syntax 'firstname lastname'. Since names are always difficult it actually only
     checks that there are no starting or ending spaces but contains at least one space in the middle of the string.
@@ -258,7 +253,7 @@ def check_kontoinhaber(is_sepa_zahler: bool, kontoinhaber: Optional[str] = None)
             raise ValueError(f"{param('kontoinhaber').param_id} must be non-empty")
 
 
-def check_bankname(is_sepa_zahler: bool, bankname: Optional[str] = None):
+def check_bankname(is_sepa_zahler: bool, bankname: str | None = None):
     """
     bankname is required for sepa_zahler and must not be empty.
     """
