@@ -3,7 +3,7 @@
 ![Unittests status badge](https://github.com/Hochfrequenz/pedantic-validator-tool/workflows/Unittests/badge.svg)
 ![Coverage status badge](https://github.com/Hochfrequenz/pedantic-validator-tool/workflows/Coverage/badge.svg)
 ![Linting status badge](https://github.com/Hochfrequenz/pedantic-validator-tool/workflows/Linting/badge.svg)
-![Black status badge](https://github.com/Hochfrequenz/pedantic-validator-tool/workflows/Formatting/badge.svg)
+![Formatting status badge](https://github.com/Hochfrequenz/pedantic-validator-tool/workflows/Formatting/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/pvtool)
 
 This package contains the validation logic to validate the data of the BO4E migration model

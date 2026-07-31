@@ -16,7 +16,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: uv sync --group formatting
+        run: uv sync --group linting
+      # matrix.tool values ("black", "isort") are kept as-is to preserve the required status check
+      # names "black (..., black)" / "black (..., isort)"; both now run ruff under the hood.
       - name: ${{ matrix.tool }} Code Formatter
         run: |
-          uv run ${{ matrix.tool }} . --check
+          if [ "${{ matrix.tool }}" = "black" ]; then
+            uv run ruff format --check .
+          else
+            uv run ruff check --select I .
+          fi

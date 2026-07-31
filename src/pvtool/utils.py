@@ -3,7 +3,6 @@ Contains utility functions to be used in the PV-Tool.
 """
 
 import inspect
-from typing import Optional
 
 from bomf.config import MigrationConfig
 from pvframework import ValidationManager
@@ -28,7 +27,7 @@ def migration_config() -> MigrationConfig:
     # call_stack[0] -> this function
     # call_stack[1] -> must be the validator function
     # call_stack[2] -> should be either `_execute_sync_validator` or `_execute_async_validator`
-    validation_manager: Optional[ValidationManagerWithConfig] = None
+    validation_manager: ValidationManagerWithConfig | None = None
     try:
         validation_manager = call_stack[2].frame.f_locals["self"]
         if not isinstance(validation_manager, ValidationManagerWithConfig):
