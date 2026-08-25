@@ -44,7 +44,7 @@ spellcheck = [
     "codespell==2.4.3"
 ]
 type-check = [
-    "mypy==2.3.0",
+    "mypy==2.3.1",
     "types-python-dateutil==2.9.0.20260807",
     "types-pytz==2026.3.1.20260727",
     {include-group = "tests"}
